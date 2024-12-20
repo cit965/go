@@ -166,8 +166,8 @@ fmt.Println(sd)
 
 如果一个变量有一个初始值，Go 将能够使用该初始值自动推断该变量的类型。因此，如果变量具有初始值，则可以删除变量声明中的类型。如果使用以下语法声明变量，Go 将从初始值自动推断该变量的类型。
 
-<pre class="language-go"><code class="lang-go"><strong>package main
-</strong>
+```go
+package main
 import "fmt"
 
 func main() {  
@@ -176,7 +176,7 @@ func main() {
     var age = 29 // type will be inferred
     fmt.Println("My age is", age)
 }
-</code></pre>
+```
 
 ### 多变量声明 <a href="#duo-bian-liang-sheng-ming" id="duo-bian-liang-sheng-ming"></a>
 
@@ -246,7 +246,6 @@ func main() {
 
 只有当: = 左侧的至少一个变量是新声明的时候，才能使用简短语法。考虑下面的程序
 
-{% code lineNumbers="true" %}
 ```go
 package main
 
@@ -258,6 +257,5 @@ func main() {
     a, b := 40, 50 //error, no new variables
 }
 ```
-{% endcode %}
 
 它会打印 `error/pro.go: 8:10: 在 := 的左边没有新变量` , 这是因为变量 a 和 b 都已经声明过了，在第8行 := 的左边没有新变量
