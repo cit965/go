@@ -6,3 +6,7 @@
   * [03-使用goland](go-3-tian-ru-men/03-shi-yong-goland.md)
   * [04-包管理](go-3-tian-ru-men/04-bao-guan-li.md)
   * [05-数据类型和变量](go-3-tian-ru-men/05-shu-ju-lei-xing-he-bian-liang.md)
+
+## go-zero
+
+* [01-初始化服务](go-zero/01-chu-shi-hua-fu-wu.md)
