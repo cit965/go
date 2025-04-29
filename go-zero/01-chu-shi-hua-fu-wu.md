@@ -73,3 +73,77 @@ func main() {
 5. 打开浏览器，访问接口
 
 <figure><img src="../.gitbook/assets/1745829991723.png" alt=""><figcaption></figcaption></figure>
+
+### 通过命令初始化服务
+
+#### 代码生成
+
+除了手撸代码，我们也可以通过 goctl 工具来快速生成初始项目代码：
+
+```
+goctl api  new demo 
+```
+
+执行完指令后，会在当前目录下生成一个 demo 目录，该目录下包含了一个最小化的 HTTP 服务，我们来查看一下该服务的目录结构。
+
+```
+# 进入 demo 服务目录
+$ cd ~/workspace/api/demo
+# 查看文件列表
+$ ls
+demo.api demo.go  etc      go.mod   internal
+# 查看目录接口
+$ tree
+.
+├── demo.api
+├── demo.go
+├── etc
+│   └── demo-api.yaml
+├── go.mod
+└── internal
+    ├── config
+    │   └── config.go
+    ├── handler
+    │   ├── demohandler.go
+    │   └── routes.go
+    ├── logic
+    │   └── demologic.go
+    ├── svc
+    │   └── servicecontext.go
+    └── types
+        └── types.go
+```
+
+#### 编写简单的逻辑代码
+
+在完成上述代码生成后，我们可以找到 `~/workspace/api/demo/internal/logic/demologic.go` 文件，编辑该文件，在 `27` 至 `28` 行添加如下代码：
+
+```
+resp = new(types.Response)
+resp.Message = req.Name
+```
+
+<figure><img src="../.gitbook/assets/1745912768966.png" alt=""><figcaption></figcaption></figure>
+
+#### 启动服务
+
+在完成上述代码编写后，我们可以通过如下指令启动服务：
+
+```
+# 进入服务目录
+$ cd ~/workspace/api/demo
+# 整理依赖文件
+$ go mod tidy
+# 启动 go 程序
+$ go run demo.go
+```
+
+当你看到有如下输出 `Starting server at 0.0.0.0:8888...`，说明服务已经启动成功,接着我们来访问一下该 HTTP 服务。
+
+```
+curl --request GET 'http://127.0.0.1:8888/from/me'
+```
+
+当你在终端看到输出内容 `{"message":"me"}` 时代表你的服务已经成功启动。
+
+恭喜你 🎉 🎉 🎉 ，你已经完成了最简单的 go-zero api 服务的创建和启动了

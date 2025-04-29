@@ -10,3 +10,4 @@
 ## go-zero
 
 * [01-初始化服务](go-zero/01-chu-shi-hua-fu-wu.md)
+* [02-api 生成代码](go-zero/02api-sheng-cheng-dai-ma.md)
