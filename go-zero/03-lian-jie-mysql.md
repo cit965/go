@@ -43,8 +43,6 @@ CREATE TABLE `user` (
 1.  **修改项目配置文件**\
     在 `etc/demo-api.yaml` 中添加 MySQL 配置：
 
-    yamlCopyDownload
-
     ```
     Name: demo-api
     Host: 0.0.0.0
@@ -54,8 +52,6 @@ CREATE TABLE `user` (
     ```
 2.  **解析配置结构体**\
     在 `internal/config/config.go` 中定义配置：
-
-    goCopyDownload
 
     ```
     package config
@@ -72,7 +68,9 @@ CREATE TABLE `user` (
 
 ### 四、生成模型代码
 
-&#x20;使a用f `gasd octl` 自动生成数据库操作代码，大幅减少手写 SQL 的工作量：
+新建 model 文件夹，创建一个 user.sql 文件，放入 sql 建表语句。&#x20;
+
+使用 `goctl` 自动生成数据库操作代码，大幅减少手写 SQL 的工作量：
 
 ```
 goctl model mysql ddl -src .\model\user.sql -dir .\model
@@ -86,5 +84,75 @@ model/
 ├── usermodel.go     # 自动生成的 CRUD 方法
 └── vars.go          # 数据库连接配置
 ```
+
+1.  **查询单条数据**\
+    在 `logic` 层调用生成的 `UserModel`：
+
+
+
+    ```
+    // logic/getuserlogic.go
+    func (l *GetUserLogic) GetUser(req *types.GetUserReq) (*types.UserResp, error) {
+        user, err := l.svcCtx.UserModel.FindOne(l.ctx, req.Id)
+        if err != nil {
+            return nil, errors.New("用户不存在")
+        }
+        return &types.UserResp{
+            Id:   user.Id,
+            Name: user.Name,
+            Age:  user.Age,
+        }, nil
+    }
+    ```
+2.  **插入数据**
+
+
+
+    ```
+    func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) error {
+        _, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
+            Name: req.Name,
+            Age:  req.Age,
+        })
+        return err
+    }
+    ```
+
+**五、实现 CRUD 操作**
+
+
+
+
+
+1.  **查询单条数据**\
+    在 `logic` 层调用生成的 `UserModel`：
+
+    ```go
+    // logic/getuserlogic.go
+    func (l *GetUserLogic) GetUser(req *types.GetUserReq) (*types.UserResp, error) {
+        user, err := l.svcCtx.UserModel.FindOne(l.ctx, req.Id)
+        if err != nil {
+            return nil, errors.New("用户不存在")
+        }
+        return &types.UserResp{
+            Id:   user.Id,
+            Name: user.Name,
+            Age:  user.Age,
+        }, nil
+    }
+    ```
+2.  **插入数据**
+
+
+
+    ```go
+    func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) error {
+        _, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
+            Name: req.Name,
+            Age:  req.Age,
+        })
+        return err
+    }
+    ```
 
 \
