@@ -169,7 +169,11 @@ func (l *DemoLogic) Demo(req *types.Request) (resp *types.Response, err error) {
 
 ```
 
+### 六、运行代码
 
+执行 go mod tidy ，下载 mysql 相关依赖，打开浏览器，输入接口地址进行测试，查看 mysql 数据库中是否成功插入一条数据：
+
+<figure><img src="../.gitbook/assets/1745974173568.png" alt=""><figcaption></figcaption></figure>
 
 本教程代码地址： [https://github.com/mouuii/go-zero-tutorial](https://github.com/mouuii/go-zero-tutorial)&#x20;
 
