@@ -68,7 +68,23 @@ CREATE TABLE `user` (
 
 ### 四、生成模型代码
 
-新建 model 文件夹，创建一个 user.sql 文件，放入 sql 建表语句。&#x20;
+mysql 代码生成支持从 sql 文件和数据库链接生成， 且支持生成带缓存逻辑代码。mysql 生成的代码内容有数据表对应的 golang 结构体、CURD 操作方法，缓存逻辑等信息。**本文我们体验下从 sql 文件生成 go代码。**
+
+新建 model 文件夹，创建一个 user.sql 文件，放入 sql 建表语句：
+
+```sql
+CREATE TABLE `user` (
+                        `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255)  NOT NULL DEFAULT '' COMMENT '用户姓名',
+                        `gender` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '用户性别',
+                        `mobile` varchar(255)  NOT NULL DEFAULT '' COMMENT '用户电话',
+                        `password` varchar(255)  NOT NULL DEFAULT '' COMMENT '用户密码',
+                        `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+                        `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                        PRIMARY KEY (`id`),
+                        UNIQUE KEY `idx_mobile_unique` (`mobile`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4;
+```
 
 使用 `goctl` 自动生成数据库操作代码，大幅减少手写 SQL 的工作量：
 
@@ -82,6 +98,7 @@ goctl model mysql ddl -src .\model\user.sql -dir .\model
 model/
 ├── user.sql
 ├── usermodel.go     # 自动生成的 CRUD 方法
+|---usermodel_gen.go
 └── vars.go          # 数据库连接配置
 ```
 
