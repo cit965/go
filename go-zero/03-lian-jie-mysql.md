@@ -53,7 +53,7 @@ CREATE TABLE `user` (
 2.  **解析配置结构体**\
     在 `internal/config/config.go` 中定义配置：
 
-    ```
+    ```go
     package config
 
     import "github.com/zeromicro/go-zero/rest"
@@ -90,7 +90,7 @@ model/
 
 
 
-    ```
+    ```go
     // logic/getuserlogic.go
     func (l *GetUserLogic) GetUser(req *types.GetUserReq) (*types.UserResp, error) {
         user, err := l.svcCtx.UserModel.FindOne(l.ctx, req.Id)
@@ -108,7 +108,7 @@ model/
 
 
 
-    ```
+    ```go
     func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) error {
         _, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
             Name: req.Name,
@@ -120,39 +120,57 @@ model/
 
 **五、实现 CRUD 操作**
 
+1. **修改 svc/servicecontext.go 文件，添加用户模型**
 
+```go
+package svc
 
+import (
+    "demo/internal/config"
+    "demo/model"
+    "github.com/zeromicro/go-zero/core/stores/sqlx"
+)
 
+type ServiceContext struct {
+    Config config.Config
 
-1.  **查询单条数据**\
-    在 `logic` 层调用生成的 `UserModel`：
+    UserModel model.UserModel
+}
 
-    ```go
-    // logic/getuserlogic.go
-    func (l *GetUserLogic) GetUser(req *types.GetUserReq) (*types.UserResp, error) {
-        user, err := l.svcCtx.UserModel.FindOne(l.ctx, req.Id)
-        if err != nil {
-            return nil, errors.New("用户不存在")
-        }
-        return &types.UserResp{
-            Id:   user.Id,
-            Name: user.Name,
-            Age:  user.Age,
-        }, nil
+func NewServiceContext(c config.Config) *ServiceContext {
+    conn := sqlx.NewMysql(c.Mysql.DataSource)
+    return &ServiceContext{
+       Config:    c,
+       UserModel: model.NewUserModel(conn, nil),
     }
-    ```
-2.  **插入数据**
+}
+```
+
+&#x20;
+
+2. **插入单条数据,在 `logic` 层调用生成的 `UserModel`：**
+
+```go
+// logic/demologic.go
+func (l *DemoLogic) Demo(req *types.Request) (resp *types.Response, err error) {
+	// todo: add your logic here and delete this line
+	resp = new(types.Response)
+	resp.Message = req.Name
+
+	u := &model.User{
+		Name:     "asdf",
+		Gender:   0,
+		Mobile:   "asdf",
+		Password: "asdf",
+	}
+	l.svcCtx.UserModel.Insert(context.Background(), u)
+	return resp, nil
+}
+
+```
 
 
 
-    ```go
-    func (l *CreateUserLogic) CreateUser(req *types.CreateUserReq) error {
-        _, err := l.svcCtx.UserModel.Insert(l.ctx, &model.User{
-            Name: req.Name,
-            Age:  req.Age,
-        })
-        return err
-    }
-    ```
+本教程代码地址： [https://github.com/mouuii/go-zero-tutorial](https://github.com/mouuii/go-zero-tutorial)&#x20;
 
-\
+commit：084269e1e0e9e6b3871ca717704a8364e526b325\
